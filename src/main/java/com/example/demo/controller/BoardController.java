@@ -47,12 +47,6 @@ public class BoardController {
     @GetMapping("/list")
     public String list(Model model){
         log.info("GET /list");
-//----------------------------------------------------------------
-        // 현재 인증된 사용자의 이메일 가져오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-
-        System.out.println("authentication : " + authentication);
 
 //------------------------------------------------------------------
         // 게시물을 날짜 기준으로 내림차순 정렬하여 가져옵니다.

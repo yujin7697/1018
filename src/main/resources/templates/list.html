@@ -78,7 +78,7 @@
 
             <a href="/mypage">
                 <div class="mypage">
-                    <img th:src="${dto.profile}" style="width:22px;height:22px;border-radius:50%;" />프로필
+                    <img th:src="${#authentication.getPrincipal().getUser().getProfile()}" style="width:22px;height:22px;border-radius:50%;" />프로필
                 </div>
             </a>
         </div>
@@ -157,9 +157,9 @@
 
                 <form action="/post" method="post" enctype="multipart/form-data">
                     <div class="form-group">
-                        <img th:src="${dto.profile}" style="width:22px;height:22px;border-radius:50%;" />
+                        <img th:src="${#authentication.getPrincipal().getUser().getProfile()}" style="width:22px;height:22px;border-radius:50%;" />
                         <label for="nickname">작성자 </label>
-                        <input type="text" id="nickname" name="nickname" th:value="${dto.nickname}" readonly/><br/>
+                        <input type="text" id="nickname" name="nickname" th:value="${#authentication.getPrincipal().getUser().getNickname()}" readonly/><br/>
 
                     </div>
 
@@ -197,12 +197,12 @@
 <main>
     <div class="board">
 
-        <th:block th:each="board : ${boardList}">
+        <th:block th:each="board : ${board}">
             <div class="board-item">
 
                 <div class="idbox">
                     <div>
-                        <img th:src="${dto.profile}" style="width:30px;height:30px;border-radius:50%;" />
+                        <img th:src="${#authentication.getPrincipal().getUser().getProfile()}" style="width:30px;height:30px;border-radius:50%;" />
                         <div id = board_id th:text="${board.nickname}">id</div>|
                         <div class="date" th:text="${board.date}">date</div>
                     </div>
