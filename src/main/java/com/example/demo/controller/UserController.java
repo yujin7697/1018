@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.config.auth.PrincipalDetails;
 import com.example.demo.domain.dto.UserDto;
 import com.example.demo.domain.entity.Board;
 import com.example.demo.domain.entity.User;
@@ -56,31 +57,8 @@ public class UserController {
 	}
 
 	@PostMapping("/join")
-	public String join_post(UserDto dto, Model model, HttpServletRequest request, ) {
+	public String join_post(UserDto dto, Model model, HttpServletRequest request) {
 		log.info("POST /join "+dto);
-
-//		dto.setRole("ROLE_USER");
-//		dto.setPassword( passwordEncoder.encode(dto.getPassword()) );
-
-//		User user = new User();
-//
-//		user.setEmail(dto.getEmail());
-//		user.setPassword(dto.getPassword());
-//		user.setNickname(dto.getNickname());
-//		user.setName(dto.getName());
-//		user.setZipcode(dto.getZipcode());
-//		user.setAddr1(dto.getAddr1());
-//		user.setAddr2(dto.getAddr2());
-//		user.setBirth(dto.getBirth());
-//		user.setPhone(dto.getPhone());
-//		user.setQuestion(dto.getQuestion());
-//		user.setAnswer(dto.getAnswer());
-//		user.setProvider(dto.getProvider());
-//		user.setProviderId(dto.getProviderId());
-//		user.setProfile("/images/basic_profile.png");
-//		user.setRole(dto.getRole());
-
-//		userRepository.save(user);
 
 		boolean isjoin = userService.joinMember(dto,model,request);
 
@@ -188,53 +166,44 @@ public class UserController {
 	}
 
 	@GetMapping("/mypage")
-	public void showMypage(Model model){
+	public void showMypage(Authentication authentication,Model model){
+
+		PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+
 		// 현재 인증된 사용자의 이메일 가져오기
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		String email = authentication.getName();
+		String email = principalDetails.getUser().getEmail();
 
+		System.out.println("user.getEmail(): "+email );
+		List<Board> myBoards = boardRepository.getBoardByEmailOrderByDateDesc(email);
+		System.out.println("myBoards' : " + myBoards);
 
-		// UserRepository를 사용하여 사용자 정보 가져오기
-		User user = userRepository.findById(email).get();
-
-		// UserDto 객체 생성
-		UserDto dto = UserDto.EntityToDto(user);
-
-		// 사용자 정보에서 닉네임을 가져와서 설정
-		if (user != null) {
-			dto.setNickname(user.getNickname());
-		}
-		System.out.println("MYPAGE : " + dto);
-		System.out.println("user.getEmail(): "+user.getNickname() );
-		List<Board> myBoards = boardRepository.getBoardByEmailOrderByDateDesc(user.getNickname());
-
-
-		model.addAttribute("dto", dto);
 		model.addAttribute("myBoards", myBoards);
+		model.addAttribute("userDto",principalDetails.getUser());
 	}
 
 	@GetMapping("/profile/leave_auth")
 	public String showauth(Model model) {
 
-		//-----------------------------------------------------------------------------------
-		// 현재 인증된 사용자의 이메일 가져오기
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		String email = authentication.getName();
-
-		// UserRepository를 사용하여 사용자 정보 가져오기
-		User user = userRepository.findById(email).get();
-
-		// UserDto 객체 생성
-		UserDto dto = UserDto.EntityToDto(user);
-		// 사용자 정보에서 닉네임을 가져와서 설정
-		if (user != null) {
-			dto.setNickname(user.getNickname());
-		}
-
-		model.addAttribute("dto", dto);
-		//--------------------------------------------------------------------------------------
-
-		return "profile/leave_auth";
+//		//-----------------------------------------------------------------------------------
+//		// 현재 인증된 사용자의 이메일 가져오기
+//		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//		String email = authentication.getName();
+//
+//		// UserRepository를 사용하여 사용자 정보 가져오기
+//		User user = userRepository.findById(email).get();
+//
+//		// UserDto 객체 생성
+//		UserDto dto = UserDto.EntityToDto(user);
+//		// 사용자 정보에서 닉네임을 가져와서 설정
+//		if (user != null) {
+//			dto.setNickname(user.getNickname());
+//		}
+//
+//		model.addAttribute("dto", dto);
+//		//--------------------------------------------------------------------------------------
+//
+//		return "profile/leave_auth";
+		return null;
 	}
 
 	@GetMapping("/user/withdraw")
@@ -304,21 +273,21 @@ public class UserController {
 		System.out.println("searchList : "+searchList);
 
 //		------------------------------------------------------------
-		// 현재 인증된 사용자의 이메일 가져오기
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		String email = authentication.getName();
-
-		// UserRepository를 사용하여 사용자 정보 가져오기
-		User user = userRepository.findById(email).get();
-
-		// UserDto 객체 생성
-		UserDto dto = UserDto.EntityToDto(user);
-		// 사용자 정보에서 닉네임을 가져와서 설정
-		if (user != null) {
-			dto.setNickname(user.getNickname());
-		}
-
-		model.addAttribute("dto", dto);
+//		// 현재 인증된 사용자의 이메일 가져오기
+//		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//		String email = authentication.getName();
+//
+//		// UserRepository를 사용하여 사용자 정보 가져오기
+//		User user = userRepository.findById(email).get();
+//
+//		// UserDto 객체 생성
+//		UserDto dto = UserDto.EntityToDto(user);
+//		// 사용자 정보에서 닉네임을 가져와서 설정
+//		if (user != null) {
+//			dto.setNickname(user.getNickname());
+//		}
+//
+//		model.addAttribute("dto", dto);
 //		------------------------------------------------------------
 		return "search-nickname";
 	}

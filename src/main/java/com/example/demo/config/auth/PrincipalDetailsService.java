@@ -30,7 +30,6 @@ public class PrincipalDetailsService implements UserDetailsService {
 		UserDto dto = new UserDto();
 		dto.setEmail(user.get().getEmail());
 		dto.setPassword(user.get().getPassword());
-
 		dto.setNickname(user.get().getNickname());
 		dto.setName(user.get().getName());
 		dto.setZipcode(user.get().getZipcode());

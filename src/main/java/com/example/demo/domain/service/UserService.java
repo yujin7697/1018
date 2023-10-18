@@ -56,6 +56,7 @@ public class UserService {
         dto.setPassword(passwordEncoder.encode(dto.getPassword()) );
 
         User user = UserDto.dtoToEntity(dto);
+        System.out.println("joinMember's user : " + user);
 
         userRepository.save(user);
 

@@ -11,7 +11,7 @@ import javax.validation.constraints.Pattern;
 @Data
 public class UserDto {
 
-
+	private Long id;
 	private String email;
 
 	private String password;
@@ -41,6 +41,7 @@ public class UserDto {
 	{
 
 		User user = User.builder()
+				.email(dto.getEmail())
 				.nickname(dto.getNickname())
 				.password(dto.getPassword())
 				.name(dto.getName())

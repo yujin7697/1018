@@ -129,6 +129,15 @@ public class BoardService {
     }
 
     @Transactional(rollbackFor = SQLException.class)
+    public Board getBoardOne(Long number){
+        Optional<Board> board = boardRepository.findByNum(number);
+        if(board.isEmpty())
+            return null;
+        else
+            return board.get();
+    }
+
+    @Transactional(rollbackFor = SQLException.class)
     public boolean deleteBoard(Long number){
         System.out.println("deleteBoard할거임!!!!!!!!! : " + number);
 
@@ -163,25 +172,45 @@ public class BoardService {
     }
 
     @Transactional(rollbackFor = SQLException.class)
-    public boolean updateBoard(Long number, String newContents) {
+    public boolean updateBoard(BoardDto dto) {
 
-        System.out.println("updateBoard!!!!!"+number);
-        // 게시물 번호로 해당 게시물 정보 가져오기
-        Optional<Board> boardOptional = boardRepository.findByNum(number);
+//        System.out.println("updateBoard!!!!!"+number);
+//        // 게시물 번호로 해당 게시물 정보 가져오기
+//        Optional<Board> boardOptional = boardRepository.findByNum(number);
+//
+//        if (boardOptional.isPresent()) {
+//            Board board = boardOptional.get();
+//
+//            // 내용만 업데이트
+//            board.setContents(newContents);
+//
+//            // 수정된 게시물 저장
+//            boardRepository.save(board);
+//
+//            return true; // 수정 성공
+//        } else {
+//            return false; // 게시물이 존재하지 않는 경우
+//        }
 
-        if (boardOptional.isPresent()) {
-            Board board = boardOptional.get();
+        Board board = new Board();
 
-            // 내용만 업데이트
-            board.setContents(newContents);
+        board.setNumber(dto.getNumber());
+        board.setContents(dto.getContents());
+        board.setHits(dto.getHits());
+        board.setLike_count(dto.getLike_count());
+        board.setDate(dto.getDate());
 
-            // 수정된 게시물 저장
-            boardRepository.save(board);
+        MultipartFile [] files = dto.getFiles();
 
-            return true; // 수정 성공
-        } else {
-            return false; // 게시물이 존재하지 않는 경우
-        }
+        Board oldBoard = boardRepository.findById(String.valueOf(dto.getNumber())).get();
+
+        System.out.println("oldBoard : " + oldBoard);
+
+        board.setNumber(oldBoard.getNumber());
+
+        board = boardRepository.save(board);
+
+        return board!=null;
     }
 
     @Transactional(rollbackFor = SQLException.class)
