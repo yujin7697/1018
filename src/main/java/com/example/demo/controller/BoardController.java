@@ -10,6 +10,7 @@ import com.example.demo.domain.service.BoardService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -48,7 +49,6 @@ public class BoardController {
     public String list(Model model){
         log.info("GET /list");
 
-//------------------------------------------------------------------
         // 게시물을 날짜 기준으로 내림차순 정렬하여 가져옵니다.
         List<Board> list = boardRepository.findAll(Sort.by(Sort.Direction.DESC, "date"));
 
@@ -58,6 +58,9 @@ public class BoardController {
         List<BoardDto> boardDtos = list.stream()
                 .map(BoardDto::Of)
                 .collect(Collectors.toList());
+
+
+        System.out.println("Board's boardDtos : " + boardDtos);
 
         model.addAttribute("board", list);
 
@@ -111,23 +114,18 @@ public class BoardController {
         //서비스 실행
         Board board = boardService.getBoardOne(number);
 
-        BoardDto dto = new BoardDto();
-        dto.setNumber(board.getNumber());
-        dto.setContents(board.getContents());
-        dto.setDate(board.getDate());
-        dto.setHits(board.getHits());
-        dto.setLike_count(board.getLike_count());
 
-        System.out.println("update's dto : " + dto);
+        System.out.println("update's dto : " + board);
 
         // 모델에 게시물 정보 전달
-        model.addAttribute("boardDto", dto);
+        model.addAttribute("boardDto", board);
 
 
     }
 
     @PostMapping("/update")
     public String postUpdate(@Valid BoardDto dto,
+                             @Param("newContents") String newContents,
                              BindingResult bindingResult,
                              Model model) throws IOException {
         log.info("POST /update number: " + dto.getNumber());
@@ -140,7 +138,8 @@ public class BoardController {
             return "mypage"; // 폼 다시 표시
         }
 
-        boolean isAdd = boardService.addBoard(dto);
+        boolean isAdd = boardService.updateBoard(dto,newContents);
+
 
         if (isAdd) {
             return "redirect:/list";
@@ -182,13 +181,6 @@ public class BoardController {
         //서비스 실행
         Board board = boardService.getBoardOne(number);
 
-        BoardDto dto = new BoardDto();
-        dto.setNumber(board.getNumber());
-        dto.setContents(board.getContents());
-        dto.setHits(board.getHits());
-        dto.setLike_count(board.getLike_count());
-        dto.setDate(board.getDate());
-
 
         //클라이언트에서 전송한 모든 쿠키 cookies에 저장
         Cookie[] cookies = request.getCookies();
@@ -219,7 +211,7 @@ public class BoardController {
             response.addCookie(readCookie);
         }
 
-        model.addAttribute("boardDto",dto);
+        model.addAttribute("boardDto",board);
 
         return "read";
     }

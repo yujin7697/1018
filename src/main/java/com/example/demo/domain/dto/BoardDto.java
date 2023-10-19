@@ -24,7 +24,7 @@ public class BoardDto {
         BoardDto dto = new BoardDto();
         dto.number = board.getNumber();
         dto.email = board.getEmail();
-        dto.nickname=board.getNickname();
+        dto.nickname = board.getNickname();
         dto.contents = board.getContents();
         dto.date = board.getDate();
         dto.hits = board.getHits();

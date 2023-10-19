@@ -106,7 +106,7 @@
 
       <a href="/mypage">
         <div class="mypage">
-          <img th:src="${dto.profile}" style="width:22px;height:22px;border-radius:50%;" />프로필
+          <img th:src="${#authentication.getPrincipal().getUser().getProfile()}" style="width:22px;height:22px;border-radius:50%;" />프로필
         </div>
       </a>
     </div>
@@ -183,9 +183,10 @@
 
         <form action="/post" method="post" enctype="multipart/form-data">
           <div class="form-group">
+            <img th:src="${#authentication.getPrincipal().getUser().getProfile()}" style="width:22px;height:22px;border-radius:50%;" />
             <label for="nickname">작성자 </label>
-            <input type="text" id="nickname" name="nickname" th:value="${dto.nickname}" readonly/><br/>
-
+            <input type="text" id="nickname" name="nickname" th:value="${#authentication.getPrincipal().getUser().getNickname()}" readonly/><br/>
+            <input type="text" id="email" name="email" th:value="${#authentication.getPrincipal().getUser().getEmail()}" readonly/>
           </div>
 
           <div class="form-group">
@@ -220,7 +221,7 @@
 
       <div class="user">
         <div class="profileimg" style="display:flex;justify-content:center; align-items : center;">
-          <img th:src="${dto.profile}" style="width:100px;height:100px;border-radius:50%;" />
+          <img th:src="${user.profile}" style="width:100px;height:100px;border-radius:50%;" />
         </div>
         <div class="name">
           <div class = "nickname" th:text="${user.nickname}"> nickname</div>
@@ -297,14 +298,21 @@ window.addEventListener('scroll', toggleQuickMenu);
 </script>
 
 <script>
-  document.getElementById('searchButton').addEventListener('click', function(event) {
-      event.preventDefault(); // 기본 동작을 막습니다.
+  document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById('searchButton').addEventListener('click', function(event) {
+        event.preventDefault(); // 기본 동작을 막습니다.
 
-      // 폼을 가져오고, action 속성을 변경한 다음 폼을 제출합니다.
-      var form = document.getElementById('searchForm');
-      form.action = '/list/search-contents'; // 폼의 action 속성 변경
-      form.submit(); // 폼 제출
-  });
+        // 폼을 가져오고, action 속성을 변경한 다음 폼을 제출합니다.
+        var form = document.getElementById('searchForm');
+        var selectedOption = document.getElementById('searchOption').value; // 선택된 검색 옵션 가져오기
+        if (selectedOption === 'nickname') {
+            form.action = '/list/search-nickname'; // 닉네임 검색을 위한 URL로 변경
+        } else {
+            form.action = '/list/search-contents'; // 내용 검색을 위한 URL로 변경
+        }
+            form.submit(); // 폼 제출
+        });
+    });
 </script>
 
 </body>

@@ -1,6 +1,7 @@
 package com.example.demo.restcontroller;
 
 import com.example.demo.domain.dto.ReplyDto;
+import com.example.demo.domain.entity.Board;
 import com.example.demo.domain.service.BoardService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

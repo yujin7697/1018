@@ -75,7 +75,7 @@
 
       <a href="/mypage">
         <div class="mypage" style="font-size : 1.2rem;">
-          <img th:src="${dto.profile}" style="width:22px;height:22px;border-radius:50%;" />프로필
+          <img th:src="${#authentication.getPrincipal().getUser().getProfile()}" style="width:22px;height:22px;border-radius:50%;" />프로필
         </div>
       </a>
     </div>
@@ -154,8 +154,8 @@
         <form action="/post" method="post" enctype="multipart/form-data">
           <div class="form-group">
             <label for="nickname">작성자 </label>
-            <input type="text" id="nickname" name="nickname" th:value="${dto.nickname}" readonly/><br/>
-
+            <input type="text" id="nickname" name="nickname" th:value="${#authentication.getPrincipal().getUser().getNickname()}" readonly/><br/>
+            <input type="text" id="email" name="email" th:value="${#authentication.getPrincipal().getUser().getEmail()}" readonly/>
           </div>
 
           <div class="form-group">
