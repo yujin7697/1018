@@ -190,6 +190,9 @@
     <form method="post" action="/update">
       <input type="hidden" name = "number" th:value="${boardDto.number}">
       <div>
+
+      </div>
+      <div>
         <label for="newContents">새로운 내용을 작성해 주세요.</label>
         <textarea id="newContents" name="newContents" rows="4" cols="50" th:text="${boardDto.contents}"></textarea>
       </div>

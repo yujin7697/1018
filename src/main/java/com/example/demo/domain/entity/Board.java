@@ -23,6 +23,10 @@ public class Board {
     private String nickname;
     private String contents;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") // 유동적으로 바뀌게
     private LocalDateTime date;

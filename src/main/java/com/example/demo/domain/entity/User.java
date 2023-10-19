@@ -15,6 +15,10 @@ import javax.persistence.*;
 public class User {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // 자동 생성 전략 사용 (예: MySQL의 AUTO_INCREMENT)
+    private Long id;
+
+    @Column(unique = true)
     private String email;
     private String password;
 
