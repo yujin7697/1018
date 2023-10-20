@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.security.Principal;
@@ -148,13 +149,23 @@ public class UserController {
 							 Model model) {
 		log.info("UserUpdate POST/ post");
 
+
 		// 현재 인증된 사용자의 이메일 가져오기
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String email = authentication.getName();
 
-
+		// Authentication 의  PrincipalDetails에 변경된 UserDto저장
+		PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
 
 		boolean isUpdate = userService.UserUpdate(email,newNickname, newBirth, newPhone, newZipcode,newAddr1, newAddr2);
+
+		UserDto dto = principalDetails.getUser();
+		dto.setNickname(newNickname);
+		dto.setBirth(newBirth);
+		dto.setPhone(newPhone);
+		dto.setZipcode(newZipcode);
+		dto.setAddr1(newAddr1);
+		dto.setAddr2(newAddr2);
 
 		if (isUpdate) {
 			redirectAttributes.addFlashAttribute("successMessage", "Nickname updated successfully.");
@@ -297,18 +308,17 @@ public class UserController {
 	@Autowired
 	private ResourceLoader resourceLoader;
 
+	private String dirpath = "C:\\hamohamo";
+
+	@Autowired
+	private HttpSession httpSession;
+
 	@PostMapping(value="/user/profileimage/upload")
 	public @ResponseBody String profileimageUpload(MultipartFile[] file, Authentication authentication) throws IOException {
 		log.info("POST  /user/profileimage/upload file : " + file);
 
-
-		//저장위치 /resources/static/images/계정명폴더/파일명
-		//폴더 경로 확인
-		Resource resource = resourceLoader.getResource("classpath:static/images");
-
-		File getfiles = resource.getFile();
-		String absolutePath = getfiles.getAbsolutePath() + "/user";
-		System.out.println("정적 자원 경로: " + absolutePath);
+		// Authentication 의  PrincipalDetails에 변경된 UserDto저장
+		PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
 
 		//접속 유저명 받기
 		authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -319,9 +329,8 @@ public class UserController {
 
 		System.out.println("showInfo's user : "+user);
 
-
 		//저장 폴더 지정
-		String uploadPath = absolutePath + File.separator + email;
+		String uploadPath = dirpath + File.separator + user.getEmail();
 		File dir = new File(uploadPath);
 		if(!dir.exists()) {
 			dir.mkdirs();
@@ -342,8 +351,6 @@ public class UserController {
 		System.out.println("--------------------");
 
 
-
-
 		//파일명 추출
 		String filename = file[0].getOriginalFilename();
 		//파일객체 생성
@@ -351,15 +358,15 @@ public class UserController {
 		//업로드
 		file[0].transferTo(fileobj);
 
-
-		//Authentication에도 변경 정보 넣기
-		// http://localhost:8080/images/user/+username/+filename
-
-		user.setProfile("http://localhost:8080/images/user/" + email+"/"+filename);
+		user.setProfile("/resources/hamohamo/"+user.getEmail()+"/"+filename);
 
 		//DB에도 넣기
 		System.out.println("userDto : "+user);
 		userService.updateProfile(user);
+
+
+		UserDto dto = principalDetails.getUser();
+		dto.setProfile("/resources/hamohamo/"+dto.getEmail()+"/"+filename);
 
 
 		return "ok";

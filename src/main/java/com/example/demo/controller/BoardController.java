@@ -51,7 +51,7 @@ public class BoardController {
 
         // 게시물을 날짜 기준으로 내림차순 정렬하여 가져옵니다.
         List<Board> list = boardRepository.findAll(Sort.by(Sort.Direction.DESC, "date"));
-        
+
         System.out.println("Board's list : " + list);
 
 

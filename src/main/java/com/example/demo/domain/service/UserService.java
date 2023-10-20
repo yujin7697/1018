@@ -38,19 +38,6 @@ public class UserService {
 
     public boolean joinMember(UserDto dto, Model model, HttpServletRequest request){
 
-        //Email 중복체크
-//        if (isEmailAlreadyTaken(dto.getEmail())) {
-//            model.addAttribute("email", "이미 사용중인 이메일입니다.");
-//            return false;
-//        }
-
-        //패스워드 일치하는지 확인
-//        if(!dto.getPassword().equals(dto.getRepassword())){
-//            model.addAttribute("repassword","패스워드가 일치하지 않습니다.");
-//            //일치안하면 FALSE(가입실패)
-//            return false;
-//        }
-
         dto.setRole("ROLE_USER");
         dto.setProfile("/images/basic_profile.png");
         dto.setPassword(passwordEncoder.encode(dto.getPassword()) );
